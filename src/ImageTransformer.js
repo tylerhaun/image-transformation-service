@@ -34,8 +34,6 @@ class ImageTransformer {
           throw error;
         }
         console.log("jimp image", image);
-        //console.log(image.bitmap.width)
-
 
         const resizeParams = {
           w: -1,
@@ -53,19 +51,12 @@ class ImageTransformer {
         console.log("resizeParams", resizeParams);
         console.log("shouldResize", shouldResize);
         if (shouldResize) {
-          image.resize(+resizeParams.w, resizeParams.h)
+          image.resize(resizeParams.w, resizeParams.h)
         }
 
         if (transformConfig.q !== undefined) {
           image.quality(transformConfig.q);
         }
-
-        //image.write("doge-transformed.jpg", (error, data) => {
-        //  if (error) {
-        //    console.error(error);
-        //  }
-        //  console.log("done", data);
-        //})
 
         image.getBuffer("image/jpeg", (error, data) => {
           if (error) {
@@ -74,20 +65,12 @@ class ImageTransformer {
           }
           return resolve(data);
         })
-        //.greyscale()
-        //.write('lena-small-bw.jpg');
+
       });
 
     })
 
-
   }
-
-  applyTransforms(image) {
-  
-  }
-
-
 
 }
 

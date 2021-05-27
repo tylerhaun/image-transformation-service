@@ -1,19 +1,24 @@
+
+class StorageProvider {
+
+  async read(name) {
+    throw new Error("Not implemented");
+  }
+
+  async write(name, buffer) {
+    throw new Error("Not implemented");
+  }
+
+  async list() {
+    throw new Error("Not implemented");
+  }
+
+}
+module.exports.StorageProvider = StorageProvider;
+
+
 const LocalStorageProvider = require("./local");
 const AwsStorageProvider = require("./aws");
-
-
-//class StorageProvider {
-//
-//  async read(name) {
-//  
-//  }
-//
-//  async write(name, buffer) {
-//  
-//  }
-//
-//}
-
 
 class StorageProviderFactory {
 

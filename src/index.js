@@ -9,12 +9,6 @@ var path=require('path');
 
 dotenv.config()
 
-var AWS = require("aws-sdk");
-s3 = new AWS.S3({
-  apiVersion: "2006-03-01",
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-});
 
 var app=express();
 
@@ -24,52 +18,21 @@ app.use(function(request, response, next) {
   return next();
 })
 
-// Show Image
-//app.get('/show-image/:img_url',function(req,res){
-//  res.render('image',{'imgUrl':req.params.img_url});
-//});
-
-
 require("./routes/files/")(app);
 
-//app.post('/add-image',upload.single('image'), function(request, response, next){
-//      // Save Image
-//  console.log("add image");
-//  console.log("file", request.file);
-//  const putParams = {
-//    Bucket: config.bucket,
-//    Key: uuid() + "." + request.file.originalname.split(".").pop(),
-//    Body: request.file.buffer,
-//    ContentType: request.file.mimetype,
-//    //ContentType: "application/json",
-//  };
-//  console.log("putParams", putParams);
-//  s3.putObject(putParams, function(error, data) {
-//    if (error) {
-//      console.error(error);
-//    }
-//    return response.json(data)
-//  })
-//
-//});
+app.use(function ErrorHandler(error, request, response, next) {
+  console.log("ErrorHandler");
+  console.error(error);
+  const statusCode = error.statusCode || 500;
+  response.status(statusCode);
+  return response.send(statusCode + " " + error.toString())
+})
 
-//app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'jade');
-
-// Set Public Folder as static Path
-//app.use(express.static(path.join(__dirname, 'public')));
 
 // Run the Server
 app.listen('3000',function(){
   console.log('Server is running at PORT '+3000);
 });
-
-
-
-
-
-
-
 
 
 
@@ -112,10 +75,6 @@ main.main().catch(error => {
   console.error(error);
 })
 
-
-
-
-class S3 {}
 
 
 

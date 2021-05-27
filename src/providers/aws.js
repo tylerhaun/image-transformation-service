@@ -1,3 +1,10 @@
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3({
+  apiVersion: "2006-03-01",
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
 
 const config = {
   bucket: "imagekit-replacement",
@@ -14,22 +21,13 @@ class AwsStorageProvider {
         Bucket: config.bucket,
         Key: name,
       }, function(error, data) {
-        // Handle any error and exit
         if (error) {
           console.error(error)
           return reject(error);
         }
         console.log(data);
-        //fs.writeFile("test.jpg", data.Body,  "binary",function(err) { });
         return resolve(data.Body);
-        //let objectData = data.Body.toString('utf-8');
       })
-      //console.log("file", file)
-      //const ret = {
-      //  data: file.Body,
-      //  mimetype: file.ContentType
-      //}
-      //console.log("ret", ret);
 
     })
   }

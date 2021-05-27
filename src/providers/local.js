@@ -1,16 +1,18 @@
 const fs = require("fs");
 const path = require("path");
 
+const { StorageProvider } = require(".");
+console.log("StorageProvider", StorageProvider);
 
-class LocalStorageProvider {
+
+class LocalStorageProvider extends StorageProvider {
 
   constructor() {
-
+    super(arguments);
     this.directory = path.resolve(process.cwd(), "data");
     if (!fs.existsSync(this.directory)){
         fs.mkdirSync(this.directory);
     }
-    
   }
 
   async read(name) {
@@ -41,6 +43,19 @@ class LocalStorageProvider {
       })
     })
 
+  }
+
+  async list() {
+    const directory = this.directory;
+    return new Promise(function(resolve, reject) {
+      fs.readdir(directory, (error, files) => {
+        if (error) {
+          console.error(error);
+          return reject(error);
+        }
+        return resolve(files);
+      });
+    })
   }
 
 }

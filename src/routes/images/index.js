@@ -16,9 +16,9 @@ const config = {
 module.exports = function(app) {
 
   const storageProviderFactory = new StorageProviderFactory();
-  const storageProvider = storageProviderFactory.getStorageProvider("local")
+  const storageProvider = storageProviderFactory.getStorageProvider(process.env.STORAGE_PROVIDER)
 
-  app.route("/files/:name")
+  app.route("/images/:name")
     .get(function(request, response, next) {
 
       const ImageTransformer = require("../../ImageTransformer");
@@ -48,7 +48,8 @@ module.exports = function(app) {
     })
 
 
-  app.route("/files/")
+  app.route("/images/")
+
     .post(upload.single('image'), function(request, response, next){
 
       console.log("add image");
@@ -56,13 +57,14 @@ module.exports = function(app) {
       const filename = uuid() + "." + request.file.originalname.split(".").pop();
       storageProvider.write(filename, request.file.buffer)
         .then(data => {
-          return response.json(data);
+          return response.json({name: filename});
         })
         .catch(error => {
           return next(error);
         })
 
     })
+
     .get(function(request, response, next) {
 
       //const paginationParams = _.pick(request.query, ["page", "pageSize"])

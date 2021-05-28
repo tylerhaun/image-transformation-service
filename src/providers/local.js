@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 
 const { StorageProvider } = require(".");
-console.log("StorageProvider", StorageProvider);
 
 
 class LocalStorageProvider extends StorageProvider {

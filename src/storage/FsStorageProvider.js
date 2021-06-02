@@ -4,7 +4,7 @@ const path = require("path");
 const { StorageProvider } = require(".");
 
 
-class LocalStorageProvider extends StorageProvider {
+class FsStorageProvider extends StorageProvider {
 
   constructor(args) {
     super(arguments);
@@ -66,4 +66,4 @@ class LocalStorageProvider extends StorageProvider {
 
 }
 
-module.exports = LocalStorageProvider;
+module.exports = FsStorageProvider;

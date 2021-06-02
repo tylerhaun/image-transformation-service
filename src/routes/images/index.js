@@ -1,21 +1,28 @@
+const _ = require("lodash");
 const uuid = require("uuid/v4");
 const multer  = require('multer');
-
+const qs = require("qs");
 const { Readable } = require("stream");
 
-const { StorageProviderFactory } = require("../../providers/")
+const { StorageProviderFactory } = require("../../storage/")
+const { CacheProviderFactory } = require("../../cache/");
+const ImageTransformer = require("../../ImageTransformer");
 
+const imageTransformer = new ImageTransformer();
+const cacheProviderFactory = new CacheProviderFactory();
+const storageProviderFactory = new StorageProviderFactory();
 
-var upload = multer()
+const cacheProvider = cacheProviderFactory.getCacheProvider(process.env.CACHE_PROVIDER || "fs")
+const storageProvider = storageProviderFactory.getStorageProvider(process.env.STORAGE_PROVIDER || "fs")
+
+const upload = multer()
 
 const config = {
   bucket: "imagekit-replacement",
 }
 
-const qs = require("qs");
 
 
-const _ = require("lodash");
 function getCacheKey(name, args) {
   console.log("getCacheKey()", name, args);
   //const keys = ["height", "width", "quality"];
@@ -34,28 +41,18 @@ function getCacheKey(name, args) {
   return `${name}_${ret}`;
 
 }
-const LocalCacheProvider = require("../../CacheProvider");
-const cacheProvider = new LocalCacheProvider();
 
 
 module.exports = function(app) {
 
-  const storageProviderFactory = new StorageProviderFactory();
-  const storageProvider = storageProviderFactory.getStorageProvider(process.env.STORAGE_PROVIDER)
 
   app.route("/images/:name")
     .get(async function(request, response, next) {
 
       try {
 
-        const ImageTransformer = require("../../ImageTransformer");
-        const imageTransformer = new ImageTransformer();
-
-        const filename = request.params.name;
-        console.log(request.params)
-
         var data;
-        console.log("query", request.query);
+        const filename = request.params.name;
         const cacheKey = getCacheKey(request.params.name, qs.parse(request.query));
         console.log("cacheKey", cacheKey);
         data = await cacheProvider.get(cacheKey)

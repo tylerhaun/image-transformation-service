@@ -17,15 +17,15 @@ class StorageProvider {
 module.exports.StorageProvider = StorageProvider;
 
 
-const LocalStorageProvider = require("./local");
-const AwsStorageProvider = require("./aws");
+const FsStorageProvider = require("./FsStorageProvider");
+const AwsStorageProvider = require("./AwsStorageProvider");
 
 class StorageProviderFactory {
 
   getStorageProvider(type) {
     switch(type) {
-      case "local":
-        return new LocalStorageProvider();
+      case "fs":
+        return new FsStorageProvider();
       case "aws":
         return new AwsStorageProvider();
       default:

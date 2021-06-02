@@ -12,6 +12,31 @@ const config = {
   bucket: "imagekit-replacement",
 }
 
+const qs = require("qs");
+
+
+const _ = require("lodash");
+function getCacheKey(name, args) {
+  console.log("getCacheKey()", name, args);
+  //const keys = ["height", "width", "quality"];
+  const clean = _.pick(args, ["height", "width", "quality"])
+  const keys = Object.keys(clean);
+  keys.sort();
+  const ret = keys.map(key => {
+    const value = clean[key];
+    if (value === undefined) {
+      return;
+    }
+    return `${key}-${value}`
+  }).join("_");
+  console.log("ret", ret);
+
+  return `${name}_${ret}`;
+
+}
+const LocalCacheProvider = require("../../CacheProvider");
+const cacheProvider = new LocalCacheProvider();
+
 
 module.exports = function(app) {
 
@@ -19,31 +44,49 @@ module.exports = function(app) {
   const storageProvider = storageProviderFactory.getStorageProvider(process.env.STORAGE_PROVIDER)
 
   app.route("/images/:name")
-    .get(function(request, response, next) {
+    .get(async function(request, response, next) {
 
-      const ImageTransformer = require("../../ImageTransformer");
-      const imageTransformer = new ImageTransformer();
+      try {
 
-      const filename = request.params.name;
-      console.log(request.params)
+        const ImageTransformer = require("../../ImageTransformer");
+        const imageTransformer = new ImageTransformer();
 
-      storageProvider.read(filename)
-        .then(async (data) => {
+        const filename = request.params.name;
+        console.log(request.params)
 
-          const transformedImage = await imageTransformer.transform(request.query, data)
+        var data;
+        console.log("query", request.query);
+        const cacheKey = getCacheKey(request.params.name, qs.parse(request.query));
+        console.log("cacheKey", cacheKey);
+        data = await cacheProvider.get(cacheKey)
+        if (data) {
+          console.log("cache hit", data);
+        }
+        if (!data) {
+          console.log("cache miss");
+          data = await storageProvider.read(filename)
+          console.log("data", data);
+          if (!data) {
+            const e = new Error("Image not found")
+            e.statusCode = 404;
+            throw e;
+          }
+          data = await imageTransformer.transform(data, request.query, data)
+          await cacheProvider.set(cacheKey, data);
+        }
 
-          const readable = new Readable()
-          readable._read = () => {}
-          readable.push(transformedImage);
-          readable.push(null);
+        const readable = new Readable()
+        readable._read = () => {}
+        readable.push(data);
+        readable.push(null);
+        return readable.pipe(response);
 
-          return readable.pipe(response);
-
-        })
-        .catch(error => {
-          console.error(error);
-          return next(error);
-        })
+      }
+      catch(error) {
+        console.log("catch error");
+        console.error(error);
+        return next(error)
+      }
 
     })
 

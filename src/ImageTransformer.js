@@ -12,23 +12,20 @@ class ImageTransformer {
     return parsed;
 
     //return {
-    //  //q: 10,
-    //  //w: 100,
-    //  //h: 200,
+    //  //quality: 10,
+    //  //width: 100,
+    //  //height: 200,
     //};
   }
 
-  async transform(params) {
-    // q - quality
-    // w - width
-    // h - height
+  async transform(data, params) {
 
     const transformConfig = this.parseParams(params)
     console.log("transformConfig", transformConfig);
 
     return new Promise(function(resolve, reject) {
 
-      Jimp.read("doge.jpg", (error, image) => {
+      Jimp.read(data, (error, image) => {
         if (error) {
           console.error(error);
           throw error;
@@ -36,26 +33,26 @@ class ImageTransformer {
         console.log("jimp image", image);
 
         const resizeParams = {
-          w: -1,
-          h: -1,
+          width: -1,
+          height: -1,
         }
         var shouldResize = false;
-        if (transformConfig.w !== undefined) {
+        if (transformConfig.width !== undefined) {
           shouldResize = true;
-          resizeParams.w = transformConfig.w;
+          resizeParams.width = transformConfig.width;
         }
-        if (transformConfig.h !== undefined) {
+        if (transformConfig.height !== undefined) {
           shouldResize = true;
-          resizeParams.h = transformConfig.h;
+          resizeParams.height = transformConfig.height;
         }
         console.log("resizeParams", resizeParams);
         console.log("shouldResize", shouldResize);
         if (shouldResize) {
-          image.resize(resizeParams.w, resizeParams.h)
+          image.resize(resizeParams.width, resizeParams.height)
         }
 
-        if (transformConfig.q !== undefined) {
-          image.quality(transformConfig.q);
+        if (transformConfig.quality !== undefined) {
+          image.quality(transformConfig.quality);
         }
 
         image.getBuffer("image/jpeg", (error, data) => {

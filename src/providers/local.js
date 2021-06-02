@@ -6,9 +6,11 @@ const { StorageProvider } = require(".");
 
 class LocalStorageProvider extends StorageProvider {
 
-  constructor() {
+  constructor(args) {
     super(arguments);
-    this.directory = path.resolve(process.cwd(), "data");
+    args = args || {};
+    args.path = args.path || "data";
+    this.directory = path.resolve(process.cwd(), args.path);
     if (!fs.existsSync(this.directory)){
         fs.mkdirSync(this.directory);
     }
@@ -20,6 +22,11 @@ class LocalStorageProvider extends StorageProvider {
     return new Promise(function(resolve, reject) {
       fs.readFile(imagePath, function(error, data) {
         if (error) {
+          console.error(error);
+          if (error.errno == -2) { // no such file or directory
+            return resolve(null)
+          }
+              throw error;
           return reject(error);
         }
         console.log("read image from " + imagePath);
@@ -33,12 +40,12 @@ class LocalStorageProvider extends StorageProvider {
 
     const imagePath = path.resolve(this.directory, name)
     return new Promise(function(resolve, reject) {
-      fs.writeFile(imagePath, data, function(error, data) {
+      fs.writeFile(imagePath, data, function(error, result) {
         if (error) {
           return reject(error);
         }
         console.log("saved image to " + imagePath);
-        return resolve(data);
+        return resolve(result);
       })
     })
 

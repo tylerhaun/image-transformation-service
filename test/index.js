@@ -1,72 +1,28 @@
 const assert = require("assert");
-const fs = require("fs");
 const dotenv = require("dotenv");
 const childProcess = require('child_process');
-const axios = require("axios");
-const FormData = require('form-data');
-const qs = require("qs");
 const Jimp = require("jimp");
 
 dotenv.config({path: "test/.env.test"})
 
 
-
-const axiosConfig = {
-  baseURL: `http://localhost:${process.env.PORT}/`,
-};
-const apiRequest = axios.create(axiosConfig);
-
-
 class Main {
-
-  async uploadImage(imagePath) {
-
-    const form = new FormData();
-    form.append('file', fs.createReadStream(imagePath));
-
-    const requestConfig = {
-      headers: {
-        ...form.getHeaders()
-      }
-    };
-    const response = await apiRequest.post("images", form, requestConfig)
-      .catch(error => {
-        console.error(error.data)
-        throw error;
-      });
-    return response.data;
-
-  }
-
-
-  async getFile(fileName, transformConfig) {
-
-    const queryParams = qs.stringify(transformConfig);
-
-    const fullUrl = `/images/${fileName}?${queryParams}`;
-    const response = await apiRequest.get(fullUrl, {
-      responseType: 'arraybuffer'
-    })
-      .catch(error => {
-        console.error(error.data);
-        throw error;
-      })
-    return response.data;
-
-  }
-
 
   async run() {
     console.log("run()");
 
-    const fileUploadResponse = await this.uploadImage("doge.jpg");
+    const ImageTransformationApi = require("./ImageTransformationApi");
+    const imageTransformationApi = new ImageTransformationApi();
+
+    const imagePath = "doge.jpg";
+    const imageUploadResponse = await imageApi.upload(imagePath);
 
     const transformConfig = {
       width: 400,
       height: 300,
       quality: 10,
     }
-    const transformedImage = await this.getFile(fileUploadResponse.name, transformConfig)
+    const transformedImage = await imageApi.get(imageUploadResponse.name, transformConfig)
 
     const image = await new Promise(function(resolve, reject) {
       Jimp.read(transformedImage, (error, image) => {
@@ -101,8 +57,6 @@ class Main {
       })
 
     server.kill();
-
-
 
   }
 

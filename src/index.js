@@ -23,6 +23,7 @@ class Main {
     const port = process.env.PORT;
     app.listen(port, function(){
       console.log("Server is running at PORT " + port);
+      process.send("server.started") // message for tests
     });
 
   }

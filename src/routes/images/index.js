@@ -90,12 +90,16 @@ module.exports = function(app) {
 
   app.route("/images/")
 
-    .post(upload.single('image'), function(request, response, next){
+    .post(/*upload.single('image')*/upload.any(), function(request, response, next){
 
       console.log("add image");
-      console.log("file", request.file);
-      const filename = uuid() + "." + request.file.originalname.split(".").pop();
-      storageProvider.write(filename, request.file.buffer)
+      if (request.files.length > 1) {
+        next(new Error("Only one file supported"));
+      }
+      const file = request.files[0];
+      console.log("file", file);
+      const filename = uuid() + "." + file.originalname.split(".").pop();
+      storageProvider.write(filename, file.buffer)
         .then(data => {
           return response.json({name: filename});
         })

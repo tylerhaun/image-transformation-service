@@ -70,7 +70,7 @@ module.exports = function(app) {
           //data = await imageTransformer.transform(data, request.query, data)
           const imageTransformer = new ImageTransformer(request.query);
           if (imageTransformer.transformations.length > 0) {
-            data = await transformer.execute(data);
+            data = await imageTransformer.execute(data);
             await cacheProvider.set(cacheKey, data);
           }
         }

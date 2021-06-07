@@ -8,7 +8,6 @@ const { StorageProviderFactory } = require("../../storage/")
 const { CacheProviderFactory } = require("../../cache/");
 const ImageTransformer = require("../../ImageTransformer");
 
-const imageTransformer = new ImageTransformer();
 const cacheProviderFactory = new CacheProviderFactory();
 const storageProviderFactory = new StorageProviderFactory();
 
@@ -68,8 +67,12 @@ module.exports = function(app) {
             e.statusCode = 404;
             throw e;
           }
-          data = await imageTransformer.transform(data, request.query, data)
-          await cacheProvider.set(cacheKey, data);
+          //data = await imageTransformer.transform(data, request.query, data)
+          const imageTransformer = new ImageTransformer(request.query);
+          if (imageTransformer.transformations.length > 0) {
+            data = await transformer.execute(data);
+            await cacheProvider.set(cacheKey, data);
+          }
         }
 
         const readable = new Readable()

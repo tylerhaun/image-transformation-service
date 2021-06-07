@@ -2,11 +2,11 @@
 
 ## Use
 
-Upload image
+#### Upload image
 POST
 http://localhost:3000/images/
 
-Transform image
+#### Transform image
 GET
 http://localhost:3000/images/00000000000000000?width=300&height=200&quality=10
 

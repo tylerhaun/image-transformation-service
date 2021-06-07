@@ -14,6 +14,7 @@ const apiRequest = axios.create(axiosConfig);
 class ImageApi {
 
   async upload(imagePath) {
+    console.log("upload()", imagePath);
 
     const form = new FormData();
     form.append('file', fs.createReadStream(imagePath));
@@ -30,7 +31,6 @@ class ImageApi {
       });
     return response.data;
     
-
   }
 
   async get(fileName, transformConfig) {

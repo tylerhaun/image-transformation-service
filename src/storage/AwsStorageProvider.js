@@ -22,10 +22,8 @@ class AwsStorageProvider {
         Key: name,
       }, function(error, data) {
         if (error) {
-          console.error(error)
           return reject(error);
         }
-        console.log(data);
         return resolve(data.Body);
       })
 
@@ -40,13 +38,9 @@ class AwsStorageProvider {
         Bucket: config.bucket,
         Key: name,
         Body: data,
-        //ContentType: request.file.mimetype,
-        //ContentType: "application/json",
       };
-      console.log("putParams", putParams);
       s3.putObject(putParams, function(error, data) {
         if (error) {
-          console.error(error);
           return reject(error);
         }
         return resolve({name});

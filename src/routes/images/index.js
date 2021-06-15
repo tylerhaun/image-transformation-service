@@ -23,8 +23,6 @@ const config = {
 
 
 function getCacheKey(name, args) {
-  console.log("getCacheKey()", name, args);
-  //const keys = ["height", "width", "quality"];
   const clean = _.pick(args, ["height", "width", "quality"])
   const keys = Object.keys(clean);
   keys.sort();
@@ -35,7 +33,6 @@ function getCacheKey(name, args) {
     }
     return `${key}-${value}`
   }).join("_");
-  console.log("ret", ret);
 
   return `${name}_${ret}`;
 
@@ -53,15 +50,12 @@ module.exports = function(app) {
         var data;
         const filename = request.params.name;
         const cacheKey = getCacheKey(request.params.name, qs.parse(request.query));
-        console.log("cacheKey", cacheKey);
         data = await cacheProvider.get(cacheKey)
         if (data) {
-          console.log("cache hit", data);
+          //console.log("cache hit", data);
         }
         if (!data) {
-          console.log("cache miss");
           data = await storageProvider.read(filename)
-          console.log("data", data);
           if (!data) {
             const e = new Error("Image not found")
             e.statusCode = 404;
@@ -83,7 +77,6 @@ module.exports = function(app) {
 
       }
       catch(error) {
-        console.log("catch error");
         console.error(error);
         return next(error)
       }
@@ -95,12 +88,10 @@ module.exports = function(app) {
 
     .post(/*upload.single('image')*/upload.any(), function(request, response, next){
 
-      console.log("add image");
       if (request.files.length > 1) {
         next(new Error("Only one file supported"));
       }
       const file = request.files[0];
-      console.log("file", file);
       const filename = request.body.name || uuid() + "." + file.originalname.split(".").pop();
       storageProvider.write(filename, file.buffer)
         .then(data => {
@@ -114,7 +105,6 @@ module.exports = function(app) {
 
     .get(function(request, response, next) {
 
-      //const paginationParams = _.pick(request.query, ["page", "pageSize"])
       storageProvider.list()
         .then(files => {
           return response.json({files});

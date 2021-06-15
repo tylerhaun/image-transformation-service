@@ -28,21 +28,17 @@ class ImageTransformer {
   }
 
   addTransformation(transformation) {
-    console.log("addTransformation()", transformation);
     this.transformations.push(transformation)
   }
 
   async execute(data) {
-    console.log("execute()", data);
     const transformations = this.transformations;
     if (transformations.length == 0) {
-      console.log("no transformations");
       return data;
     }
 
     return new Promise(function(resolve, reject) {
 
-      console.log("jimp.read()");
       Jimp.read(data, (error, image) => {
         if (error) {
           console.error(error);
@@ -50,7 +46,6 @@ class ImageTransformer {
         }
 
         transformations.forEach(transformation => {
-          console.log("executing tranformation", transformation)
           transformation.transform(image);
         })
 
@@ -81,7 +76,6 @@ class BaseTransformation {
 class ResizeTransformation extends BaseTransformation {
 
   transform(image) {
-    console.log("transform()", image);
 
     const resizeParams = {
       width: -1,
@@ -99,7 +93,6 @@ class ResizeTransformation extends BaseTransformation {
 class QualityTransformation extends BaseTransformation {
 
   transform(image) {
-    console.log("transform()", image);
     if (this.config.quality !== undefined) {
       image.quality(this.config.quality);
     }

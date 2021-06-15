@@ -22,14 +22,11 @@ class FsStorageProvider extends StorageProvider {
     return new Promise(function(resolve, reject) {
       fs.readFile(imagePath, function(error, data) {
         if (error) {
-          console.error(error);
           if (error.errno == -2) { // no such file or directory
             return resolve(null)
           }
-              throw error;
           return reject(error);
         }
-        console.log("read image from " + imagePath);
         return resolve(data);
       })
     })
@@ -44,7 +41,6 @@ class FsStorageProvider extends StorageProvider {
         if (error) {
           return reject(error);
         }
-        console.log("saved image to " + imagePath);
         return resolve(result);
       })
     })
@@ -56,7 +52,6 @@ class FsStorageProvider extends StorageProvider {
     return new Promise(function(resolve, reject) {
       fs.readdir(directory, (error, files) => {
         if (error) {
-          console.error(error);
           return reject(error);
         }
         return resolve(files);

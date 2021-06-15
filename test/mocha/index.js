@@ -198,6 +198,26 @@ describe("API", () => {
         // at least 2x faster
         assert(cacheDuration < transformDuration / 2)
       })
+      it("should resize with only width param", async function() {
+        this.timeout(5000);
+        const transformConfig = {
+          width: 105,
+        };
+        const imageBuffer = await imageApi.get(imageName, transformConfig);
+
+        const image = await new Promise(function(resolve, reject) {
+          Jimp.read(imageBuffer, (error, image) => {
+            if (error) {
+              console.error(error);
+              return reject(error);
+            }
+            return resolve(image);
+          })
+        })
+        assert(image.bitmap.width == transformConfig.width);
+        assert(image.bitmap.height == transformConfig.width); // image has 1:1 aspect ratio so this should hold true
+
+      })
     })
   })
 

@@ -41,7 +41,6 @@ class ImageTransformer {
 
       Jimp.read(data, (error, image) => {
         if (error) {
-          console.error(error);
           return reject(error);
         }
 
@@ -51,7 +50,6 @@ class ImageTransformer {
 
         image.getBuffer("image/jpeg", (error, data) => {
           if (error) {
-            console.error(error);
             return reject(error);
           }
           return resolve(data);
@@ -81,8 +79,12 @@ class ResizeTransformation extends BaseTransformation {
       width: -1,
       height: -1,
     }
-    resizeParams.width = this.config.width;
-    resizeParams.height = this.config.height;
+    if (this.config.width !== undefined) {
+      resizeParams.width = this.config.width;
+    }
+    if (this.config.height !== undefined) {
+      resizeParams.height = this.config.height;
+    }
 
     image.resize(resizeParams.width, resizeParams.height)
 

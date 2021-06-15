@@ -14,6 +14,9 @@ class Main {
   async main() {
 
     const app=express();
+    app.get("/ping", function pingHandler(request, response, next) {
+      return response.json({pong: true});
+    })
     app.use(bodyParser.json());
     app.use(RequestLogger);
     require("./routes/images/")(app);

@@ -13,11 +13,14 @@ const apiRequest = axios.create(axiosConfig);
 
 class ImageApi {
 
-  async upload(imagePath) {
+  async upload(imagePath, name) {
     console.log("upload()", imagePath);
 
     const form = new FormData();
     form.append('file', fs.createReadStream(imagePath));
+    if (name) {
+      form.append("name", name);
+    }
 
     const requestConfig = {
       headers: {
@@ -35,6 +38,7 @@ class ImageApi {
 
   async get(fileName, transformConfig) {
 
+    transformConfig = transformConfig || {};
     const queryParams = qs.stringify(transformConfig);
 
     const fullUrl = `/images/${fileName}?${queryParams}`;

@@ -101,7 +101,7 @@ module.exports = function(app) {
       }
       const file = request.files[0];
       console.log("file", file);
-      const filename = uuid() + "." + file.originalname.split(".").pop();
+      const filename = request.body.name || uuid() + "." + file.originalname.split(".").pop();
       storageProvider.write(filename, file.buffer)
         .then(data => {
           return response.json({name: filename});

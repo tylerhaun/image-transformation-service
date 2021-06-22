@@ -1,18 +1,18 @@
-const FsStorageProvider = require("../storage/FsStorageProvider");
-const { CacheProvider  } = require(".");
+const FsProvider = require("../shared-providers/FsProvider");
 
 
-const fsStorageProvider = new FsStorageProvider({path: "cache"});
+class FsCacheProvider {
 
-
-class FsCacheProvider extends CacheProvider {
+  constructor() {
+    this.fsProvider = new FsProvider({path: "cache"});
+  }
 
   async get(key) {
-    return fsStorageProvider.read(key);
+    return this.fsProvider.read(key);
   }
 
   async set(key, value) {
-    return fsStorageProvider.write(key, value);
+    return this.fsProvider.write(key, value);
   }
 
 }

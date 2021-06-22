@@ -1,20 +1,20 @@
 
-class StorageProvider {
-
-  async read(name) {
-    throw new Error("Not implemented");
-  }
-
-  async write(name, buffer) {
-    throw new Error("Not implemented");
-  }
-
-  async list() {
-    throw new Error("Not implemented");
-  }
-
-}
-module.exports.StorageProvider = StorageProvider;
+//class StorageProvider {
+//
+//  async read(name) {
+//    throw new Error("Not implemented");
+//  }
+//
+//  async write(name, buffer) {
+//    throw new Error("Not implemented");
+//  }
+//
+//  async list() {
+//    throw new Error("Not implemented");
+//  }
+//
+//}
+//module.exports.StorageProvider = StorageProvider;
 
 
 const MemoryStorageProvider = require("./MemoryStorageProvider");

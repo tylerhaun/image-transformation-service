@@ -1,13 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 
-const { StorageProvider } = require(".");
 
-
-class MemoryStorageProvider extends StorageProvider {
+class MemoryStorageProvider {
 
   constructor(args) {
-    super(arguments);
     this.data = {};
   }
 

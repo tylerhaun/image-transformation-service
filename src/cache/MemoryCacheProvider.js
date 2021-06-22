@@ -1,8 +1,6 @@
-const { CacheProvider  } = require(".");
-
 const data = {};
 
-class MemoryCacheProvider extends CacheProvider {
+class MemoryCacheProvider {
 
   async get(key) {
     return data[key];

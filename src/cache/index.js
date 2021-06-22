@@ -1,16 +1,16 @@
 
-class CacheProvider {
-
-  async get(key) {
-    throw new Error("Not implemented");
-  }
-
-  async set(key, value) {
-    throw new Error("Not implemented");
-  }
-
-}
-module.exports.CacheProvider = CacheProvider;
+//class CacheProvider {
+//
+//  async get(key) {
+//    throw new Error("Not implemented");
+//  }
+//
+//  async set(key, value) {
+//    throw new Error("Not implemented");
+//  }
+//
+//}
+//module.exports.CacheProvider = CacheProvider;
 
 
 const FsCacheProvider = require("./FsCacheProvider");

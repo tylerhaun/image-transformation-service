@@ -1,4 +1,4 @@
-const uuid = require("uuid/v4");
+const uuid = require("uuid").v4;
 const multer  = require('multer');
 const qs = require("qs");
 const { Readable } = require("stream");

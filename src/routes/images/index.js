@@ -1,4 +1,4 @@
-const _ = require("lodash");
+//const _ = require("lodash");
 const uuid = require("uuid/v4");
 const multer  = require('multer');
 const qs = require("qs");
@@ -7,36 +7,33 @@ const { Readable } = require("stream");
 const { StorageProviderFactory } = require("../../storage/")
 const { CacheProviderFactory } = require("../../cache/");
 const ImageTransformer = require("../../ImageTransformer");
+const { getCacheKey } = require("../../utils");
 
 const cacheProviderFactory = new CacheProviderFactory();
 const storageProviderFactory = new StorageProviderFactory();
 
-const cacheProvider = cacheProviderFactory.getCacheProvider(process.env.CACHE_PROVIDER || "fs")
-const storageProvider = storageProviderFactory.getStorageProvider(process.env.STORAGE_PROVIDER || "fs")
+const cacheProvider = cacheProviderFactory.getCacheProvider(process.env.CACHE_PROVIDER)
+const storageProvider = storageProviderFactory.getStorageProvider(process.env.STORAGE_PROVIDER)
 
 const upload = multer()
 
-const config = {
-  bucket: "imagekit-replacement",
-}
 
 
-
-function getCacheKey(name, args) {
-  const clean = _.pick(args, ["height", "width", "quality"])
-  const keys = Object.keys(clean);
-  keys.sort();
-  const ret = keys.map(key => {
-    const value = clean[key];
-    if (value === undefined) {
-      return;
-    }
-    return `${key}-${value}`
-  }).join("_");
-
-  return `${name}_${ret}`;
-
-}
+//function getCacheKey(name, args) {
+//  const clean = _.pick(args, ["height", "width", "quality"])
+//  const keys = Object.keys(clean);
+//  keys.sort();
+//  const ret = keys.map(key => {
+//    const value = clean[key];
+//    if (value === undefined) {
+//      return;
+//    }
+//    return `${key}-${value}`
+//  }).join("_");
+//
+//  return `${name}_${ret}`;
+//
+//}
 
 
 module.exports = function(app) {
@@ -49,7 +46,8 @@ module.exports = function(app) {
 
         var data;
         const filename = request.params.name;
-        const cacheKey = getCacheKey(request.params.name, qs.parse(request.query));
+        const cacheKey = getCacheKey(request.params.name, request.query);
+        //const cacheKey = getCacheKey(request.params.name, qs.parse(request.query));
         data = await cacheProvider.get(cacheKey)
         if (data) {
           //console.log("cache hit", data);

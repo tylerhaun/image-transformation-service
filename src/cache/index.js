@@ -15,6 +15,7 @@
 
 const FsCacheProvider = require("./FsCacheProvider");
 const MemoryCacheProvider = require("./MemoryCacheProvider");
+const AwsCacheProvider = require("./AwsCacheProvider");
 
 class CacheProviderFactory {
 
@@ -24,8 +25,10 @@ class CacheProviderFactory {
         return new MemoryCacheProvider();
       case "fs":
         return new FsCacheProvider();
+      case "aws":
+        return new AwsCacheProvider();
       default:
-        throw new Error("Invalid storage provider type: " + type);
+        throw new Error("Invalid cache provider type: " + type);
     }
   }
 

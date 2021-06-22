@@ -11,15 +11,18 @@ const AwsProvider = require("../shared-providers/AwsProvider");
 //  bucket: "imagekit-replacement",
 //}
 
+const defaultBucket = "image-transformation-service-storage";
+
 
 class AwsStorageProvider {
 
   constructor(config) {
-    this.awsProvider = new AwsProvider(config);
+    const bucket = process.env.AWS_STORAGE_BUCKET || defaultBucket;
+    this.awsProvider = new AwsProvider({bucket});
   }
 
   async read(name) {
-    return this.awsProvider.get(key);
+    return this.awsProvider.get(name);
 
     //return new Promise(function(resolve, reject) {
 
@@ -37,7 +40,7 @@ class AwsStorageProvider {
   }
 
   async write(name, data) {
-    return this.awsProvider.put(key, value);
+    return this.awsProvider.put(name, data);
 
     //return new Promise(function(resolve, reject) {
     //

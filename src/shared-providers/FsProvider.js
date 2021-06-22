@@ -20,9 +20,9 @@ class FsStorageProvider {
     return new Promise(function(resolve, reject) {
       fs.readFile(imagePath, function(error, data) {
         if (error) {
-          if (error.errno == -2) { // no such file or directory
-            return resolve(null)
-          }
+          //if (error.errno == -2) { // no such file or directory
+          //  return resolve(null)
+          //}
           return reject(error);
         }
         return resolve(data);

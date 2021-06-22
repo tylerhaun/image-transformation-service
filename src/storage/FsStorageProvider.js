@@ -3,10 +3,14 @@ const FsProvider = require("../shared-providers/FsProvider");
 //const path = require("path");
 
 
+const defaultPath = "data";
+
+
 class FsStorageProvider {
 
   constructor(args) {
-    this.fsProvider = new FsProvider({path: "data"});
+    const path = process.env.FS_STORAGE_PATH || defaultPath;
+    this.fsProvider = new FsProvider({path});
     //super(arguments);
     //args = args || {};
     //args.path = args.path || "data";

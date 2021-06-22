@@ -1,5 +1,7 @@
 const Jimp = require("jimp");
 const qs = require("qs");
+const ResizeTransformation = require("./transformations/ResizeTransformation");
+const QualityTransformation = require("./transformations/QualityTransformation");
 
 
 class ImageTransformer {
@@ -60,47 +62,5 @@ class ImageTransformer {
   }
 }
 
-
-class BaseTransformation {
-  constructor(config) {
-    this.config = config;
-  }
-  async transform(image) {
-    throw new Error("Not implemented");
-  }
-}
-
-
-class ResizeTransformation extends BaseTransformation {
-
-  transform(image) {
-
-    const resizeParams = {
-      width: -1,
-      height: -1,
-    }
-    if (this.config.width !== undefined) {
-      resizeParams.width = this.config.width;
-    }
-    if (this.config.height !== undefined) {
-      resizeParams.height = this.config.height;
-    }
-
-    image.resize(resizeParams.width, resizeParams.height)
-
-  }
-}
-
-
-class QualityTransformation extends BaseTransformation {
-
-  transform(image) {
-    if (this.config.quality !== undefined) {
-      image.quality(this.config.quality);
-    }
-
-  }
-
-}
 
 module.exports = ImageTransformer;
